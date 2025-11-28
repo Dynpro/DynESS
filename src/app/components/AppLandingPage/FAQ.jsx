@@ -184,7 +184,6 @@ const faqSections = [
     ],
   },
 ];
-
 const FAQ = () => {
   return (
     <FAQContainer id="faq">
