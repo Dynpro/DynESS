@@ -543,13 +543,7 @@
 
 // export default DocumentCenter;
 
-
-
-
-
-//  Added Appointment Letter 
-
-
+//  Added Appointment Letter
 
 import React, { useState, useEffect, useReducer } from 'react';
 import {
@@ -629,40 +623,42 @@ const DocumentCenter = () => {
   // Role-based visibility: Vendor (roleId = 9), Consultant (roleId = 10), Secondment (roleId = 11)
   const roleId = localStorage.getItem('roleId');
   const hideRestrictedSections = ['9', '10', '11'].includes(roleId);
-  const allowedDocsByRole = roleId === '9'
-    ? [
-        'DynPro Code of Ethics & Business Conduct',
-        'HIPAA Security Awareness & Training',
-        'Vendor Guidelines/Policies',
-        'POSH-Awareness & Education',
-        'CRM4-NDA-v24'
-      ]
-    : (roleId === '10' || roleId === '11'
-        ? [
-            'DynPro Code of Ethics & Business Conduct',
-            'HIPAA Security Awareness & Training',
-          ]
-        : null);
+  const allowedDocsByRole =
+    roleId === '9'
+      ? [
+          'DynPro Code of Ethics & Business Conduct',
+          'HIPAA Security Awareness & Training',
+          'Vendor Guidelines/Policies',
+          'POSH-Awareness & Education',
+          'CRM4-NDA-v24',
+        ]
+      : roleId === '10' || roleId === '11'
+      ? ['DynPro Code of Ethics & Business Conduct', 'HIPAA Security Awareness & Training']
+      : null;
   const allowedDocsSet = allowedDocsByRole
     ? new Set(allowedDocsByRole.map((s) => s.toLowerCase().trim()))
     : null;
   const displayedDocuments = allowedDocsSet
-    ? (Array.isArray(documents)
-        ? documents.filter((doc) =>
-            allowedDocsSet.has(String(doc?.doc_name || '').toLowerCase().trim())
+    ? Array.isArray(documents)
+      ? documents.filter((doc) =>
+          allowedDocsSet.has(
+            String(doc?.doc_name || '')
+              .toLowerCase()
+              .trim()
           )
-        : [])
+        )
+      : []
     : documents;
 
   // NEW: Function to fetch appointment letter details
   const fetchAppointmentLetter = async () => {
     try {
       setAppointmentLetterLoading(true);
-      
+
       // Get access token and identity number from localStorage
       const accessToken = localStorage.getItem('accessToken');
       const identityNo = localStorage.getItem('identityNo');
-      
+
       if (!accessToken || !identityNo) {
         console.error('Access token or identity number not found in localStorage');
         setAppointmentLetterLoading(false);
@@ -681,7 +677,7 @@ const DocumentCenter = () => {
       );
 
       setAppointmentLetterLoading(false);
-      
+
       if (response && response.data && response.data.status === 200) {
         setAppointmentLetter(response.data);
         setHasAppointmentLetter(true);
@@ -690,7 +686,10 @@ const DocumentCenter = () => {
       }
     } catch (error) {
       setAppointmentLetterLoading(false);
-      console.error('Error fetching appointment letter:', error?.message || 'Something went wrong!');
+      console.error(
+        'Error fetching appointment letter:',
+        error?.message || 'Something went wrong!'
+      );
       setHasAppointmentLetter(false);
     }
   };

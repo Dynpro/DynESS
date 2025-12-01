@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import {
   Box,
   Typography,
   Card,
+  Breadcrumb,
   CardContent,
   Grid,
   useTheme,
@@ -134,138 +136,166 @@ const CultureInitiatives = () => {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setShow(true);
-    return () => setShow(false);
+    setMounted(true);
+    const timer = setTimeout(() => setShow(true), 100);
+    return () => {
+      clearTimeout(timer);
+      setShow(false);
+      setMounted(false);
+    };
   }, []);
+
+  const handleCardClick = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  );
 
   return (
     <Fade in={show} timeout={800}>
-      <Box
-        sx={{
-          minHeight: '100vh',
-          py: 8,
-          background:
-            theme.palette.mode === 'dark'
-              ? 'radial-gradient(circle at top right, #1a1a2e 0%, #16213e 100%)'
-              : 'linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)',
-        }}
-      >
-        <Container maxWidth="lg">
-          <Zoom in={show} style={{ transitionDelay: show ? '200ms' : '0ms' }}>
-            <Box>
-              <Typography
-                variant="h3"
-                component="h1"
-                align="center"
-                gutterBottom
-                sx={{
-                  fontWeight: 700,
-                  mb: 2,
-                  background:
-                    theme.palette.mode === 'dark'
-                      ? 'linear-gradient(45deg, #64B5F6 30%, #42A5F5 90%)'
-                      : 'linear-gradient(45deg, #1976D2 30%, #2196F3 90%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  position: 'relative',
-                  '&:after': {
-                    content: '""',
-                    position: 'absolute',
-                    bottom: -8,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: 80,
-                    height: 4,
-                    background: theme.palette.primary.main,
-                    borderRadius: 2,
-                  },
-                }}
-              >
-                Our Culture & Initiatives
-              </Typography>
-
-              <Typography
-                variant="h6"
-                align="center"
-                color="textSecondary"
-                paragraph
-                sx={{
-                  maxWidth: 700,
-                  mx: 'auto',
-                  mb: 6,
-                  lineHeight: 1.7,
-                }}
-              >
-                At DynPro, we believe our strength lies in our people and the culture we build
-                together. Explore how we celebrate achievements, foster growth, and create
-                meaningful connections.
-              </Typography>
-            </Box>
-          </Zoom>
-
-          <Grid container spacing={4} justifyContent="center">
-            {initiatives.map((initiative, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Grow
-                  in={show}
-                  style={{ transformOrigin: '0 0 0' }}
-                  {...(show ? { timeout: 300 + index * 100 } : {})}
+      <>
+        <Box className="breadcrumb" sx={{ m: 1 }}>
+          <Breadcrumb routeSegments={[{ name: 'Culture Initiatives' }]} />
+        </Box>
+        <Box
+          sx={{
+            minHeight: '100vh',
+            margin: '30px',
+            [theme.breakpoints.down('sm')]: { margin: '16px' },
+            background:
+              theme.palette.mode === 'dark'
+                ? 'radial-gradient(circle at top right, #1a1a2e 0%, #16213e 100%)'
+                : 'linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)',
+          }}
+        >
+          <Container maxWidth="lg">
+            <Zoom in={show} style={{ transitionDelay: show ? '200ms' : '0ms' }}>
+              <Box>
+                <Typography
+                  variant="h3"
+                  component="h1"
+                  align="center"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    mb: 2,
+                    background:
+                      theme.palette.mode === 'dark'
+                        ? 'linear-gradient(45deg, #64B5F6 30%, #42A5F5 90%)'
+                        : 'linear-gradient(45deg, #1976D2 30%, #2196F3 90%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    position: 'relative',
+                    '&:after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: -8,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 80,
+                      height: 4,
+                      background: theme.palette.primary.main,
+                      borderRadius: 2,
+                    },
+                  }}
                 >
-                  <Box>
-                    <StyledCard
-                      onClick={() => navigate(initiative.path)}
-                      sx={{
-                        cursor: 'pointer',
-                        height: '100%',
-                        '&:before': {
-                          content: '""',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          height: 4,
-                          background: initiative.color,
-                        },
-                      }}
-                    >
-                      <CardContentStyled className="card-content">
-                        <IconWrapper className="card-icon">{initiative.icon}</IconWrapper>
-                        <Typography
-                          variant="h6"
-                          component="h3"
-                          gutterBottom
-                          sx={{
-                            fontWeight: 600,
-                            mb: 2,
-                            color:
-                              theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
-                          }}
-                        >
-                          {initiative.title}
-                        </Typography>
-                        <Typography
-                          variant="body1"
-                          color="textSecondary"
-                          sx={{
-                            mb: 2,
-                            lineHeight: 1.6,
-                          }}
-                        >
-                          {initiative.description}
-                        </Typography>
-                      </CardContentStyled>
-                    </StyledCard>
-                  </Box>
-                </Grow>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
+                  Our Culture & Initiatives
+                </Typography>
+
+                <Typography
+                  variant="h6"
+                  align="center"
+                  color="textSecondary"
+                  paragraph
+                  sx={{
+                    maxWidth: 700,
+                    mx: 'auto',
+                    mb: 6,
+                    lineHeight: 1.7,
+                  }}
+                >
+                  At DynPro, we believe our strength lies in our people and the culture we build
+                  together. Explore how we celebrate achievements, foster growth, and create
+                  meaningful connections.
+                </Typography>
+              </Box>
+            </Zoom>
+
+            <Grid container spacing={4} justifyContent="center">
+              {initiatives.map((initiative, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Grow
+                    in={show}
+                    style={{ transformOrigin: '0 0 0' }}
+                    {...(show ? { timeout: 300 + index * 100 } : {})}
+                  >
+                    <Box>
+                      <StyledCard
+                        component="article"
+                        aria-label={initiative.title}
+                        onClick={() => handleCardClick(initiative.path)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleCardClick(initiative.path)}
+                        tabIndex={0}
+                        role="button"
+                        sx={{
+                          cursor: 'pointer',
+                          height: '100%',
+                          '&:before': {
+                            content: '""',
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            height: 4,
+                            background: initiative.color,
+                          },
+                        }}
+                      >
+                        <CardContentStyled className="card-content">
+                          <IconWrapper className="card-icon">{initiative.icon}</IconWrapper>
+                          <Typography
+                            variant="h6"
+                            component="h3"
+                            gutterBottom
+                            sx={{
+                              fontWeight: 600,
+                              mb: 2,
+                              color:
+                                theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
+                            }}
+                          >
+                            {initiative.title}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            color="textSecondary"
+                            sx={{
+                              mb: 2,
+                              lineHeight: 1.6,
+                            }}
+                          >
+                            {initiative.description}
+                          </Typography>
+                        </CardContentStyled>
+                      </StyledCard>
+                    </Box>
+                  </Grow>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
+        </Box>
+      </>
     </Fade>
   );
 };
 
-export default CultureInitiatives;
+CultureInitiatives.propTypes = {
+  theme: PropTypes.object,
+};
+
+export default React.memo(CultureInitiatives);

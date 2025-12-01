@@ -260,6 +260,7 @@ const UserProfile = () => {
                 color="primary"
                 onClick={() => setOpenDialog(true)}
                 startIcon={<Edit />}
+                disabled={![3, 7].includes(user?.role_id)}
               >
                 Update Profile
               </StyledButton>

@@ -182,9 +182,7 @@ const CultureInitiativesPage = () => {
   return (
     <Container>
       <Box className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[{ name: 'Culture', path: '/culture' }, { name: 'Initiatives' }]}
-        />
+        <Breadcrumb routeSegments={[{ name: 'Cultural Initiatives' }]} />
       </Box>
 
       <HeaderSection>
