@@ -180,16 +180,17 @@ const CultureInitiativesPage = () => {
   ];
 
   return (
-    <Container>
-      <Box className="breadcrumb">
+    <>      
+    <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[{ name: 'Culture', path: '/culture' }, { name: 'Initiatives' }]}
+          routeSegments={[{ name: 'Cultural Initiatives' }]}
         />
       </Box>
 
+    <Container>
       <HeaderSection>
         <Typography variant="h4" component="h1">
-          Culture Initiatives
+          Cultural Initiatives
         </Typography>
         <Typography variant="body1">
           DynPro is a global leader in IT Solutions & Services with a workforce of more than 1200
@@ -353,6 +354,7 @@ const CultureInitiativesPage = () => {
         </Box>
       </Paper>
     </Container>
+    </>
   );
 };
 

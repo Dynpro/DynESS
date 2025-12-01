@@ -241,7 +241,7 @@ const Sidenav = () => {
       permissionKey: 'referral',
     },
     {
-      title: 'Culture Initiatives',
+      title: 'Cultural Initiatives',
       path: '/culture/initiatives',
       icon: <Diversity3Icon />,
       allowAll: true,

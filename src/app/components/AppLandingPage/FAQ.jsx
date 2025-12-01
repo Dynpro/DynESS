@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { styled } from '@mui/system';
+import { Breadcrumb } from '..';
 
 const FAQContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(8, 0),
@@ -186,6 +187,10 @@ const faqSections = [
 ];
 const FAQ = () => {
   return (
+    <>
+          <Box className="breadcrumb">
+        <Breadcrumb routeSegments={[{ name: 'FAQ' }]} />
+      </Box>
     <FAQContainer id="faq">
       <Container maxWidth="md">
         <SectionTitle variant="h3" component="h2">
@@ -253,6 +258,7 @@ const FAQ = () => {
         </Box>
       </Container>
     </FAQContainer>
+    </>
   );
 };
 
