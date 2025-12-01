@@ -817,33 +817,6 @@ const DocumentCenter = () => {
     }
   };
 
-  const getFormattedFinancialYear = () => {
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1; // Months are 0-indexed in JS
-    
-    // Financial year starts in April. If before April, it's previous year - current year
-    // Else it's current year - next year
-    if (currentMonth < 4) {
-      const startYear = currentYear - 1;
-      const endYear = currentYear.toString().slice(-2);
-      return {
-        full: `${startYear}-${currentYear}`,
-        short: `${startYear.toString().slice(-2)}-${endYear}`,
-        display: `${startYear}-${endYear}`,
-        filename: `${startYear}-${endYear}`
-      };
-    } else {
-      const startYear = currentYear;
-      const endYear = (currentYear + 1).toString().slice(-2);
-      return {
-        full: `${startYear}-${currentYear + 1}`,
-        short: `${startYear.toString().slice(-2)}-${endYear}`,
-        display: `${startYear}-${endYear}`,
-        filename: `${startYear}-${endYear}`
-      };
-    }
-  };
 
   const handleDownload = async () => {
     try {
@@ -855,7 +828,7 @@ const DocumentCenter = () => {
         responseType: 'blob',
       });
 
-      const fy = getFormattedFinancialYear();
+      const fy = getFinancialYear();
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -954,13 +927,27 @@ const DocumentCenter = () => {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1; // Months are 0-indexed in JS
-
-    // Financial year starts in April. If before April, it belongs to the previous FY.
+    
+    // Financial year starts in April. If before April, it's previous year - current year
+    // Else it's current year - next year
+    let startYear, endYear, shortEndYear;
+    
     if (currentMonth < 4) {
-      return `${currentYear - 1}-${currentYear}`;
+      startYear = currentYear - 1;
+      endYear = currentYear;
+      shortEndYear = currentYear.toString().slice(-2);
     } else {
-      return `${currentYear}-${currentYear + 1}`;
+      startYear = currentYear;
+      endYear = currentYear + 1;
+      shortEndYear = (currentYear + 1).toString().slice(-2);
     }
+    
+    return {
+      full: `${startYear}-${endYear}`,           // 2024-2025
+      short: `${startYear.toString().slice(-2)}-${shortEndYear}`,  // 24-25
+      display: `${startYear}-${shortEndYear}`,   // 2024-25
+      filename: `${startYear}-${shortEndYear}`   // 2024-25
+    };
   };
   const handleSubmitITProof = async (e) => {
     e.preventDefault();
@@ -1134,7 +1121,7 @@ const DocumentCenter = () => {
                   <List>
                     <ListItem>
                       <ListItemText
-                        primary={`Download FY ${getFormattedFinancialYear().short} IT Declaration Template`}
+                        primary={`Download FY ${getFinancialYear().short} IT Declaration Template`}
                         sx={{ color: '#59919d', fontWeight: '400 !important' }}
                       />
                       <ListItemSecondaryAction>
