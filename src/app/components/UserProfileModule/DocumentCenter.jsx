@@ -817,6 +817,34 @@ const DocumentCenter = () => {
     }
   };
 
+  const getFormattedFinancialYear = () => {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // Months are 0-indexed in JS
+    
+    // Financial year starts in April. If before April, it's previous year - current year
+    // Else it's current year - next year
+    if (currentMonth < 4) {
+      const startYear = currentYear - 1;
+      const endYear = currentYear.toString().slice(-2);
+      return {
+        full: `${startYear}-${currentYear}`,
+        short: `${startYear.toString().slice(-2)}-${endYear}`,
+        display: `${startYear}-${endYear}`,
+        filename: `${startYear}-${endYear}`
+      };
+    } else {
+      const startYear = currentYear;
+      const endYear = (currentYear + 1).toString().slice(-2);
+      return {
+        full: `${startYear}-${currentYear + 1}`,
+        short: `${startYear.toString().slice(-2)}-${endYear}`,
+        display: `${startYear}-${endYear}`,
+        filename: `${startYear}-${endYear}`
+      };
+    }
+  };
+
   const handleDownload = async () => {
     try {
       const response = await axios.get(commonConfig.urls.itr_template_download, {
@@ -827,10 +855,11 @@ const DocumentCenter = () => {
         responseType: 'blob',
       });
 
+      const fy = getFormattedFinancialYear();
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `IT Declaration FY 2024-25.xlsx`);
+      link.setAttribute('download', `IT Declaration FY ${fy.filename}.xlsx`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1105,7 +1134,7 @@ const DocumentCenter = () => {
                   <List>
                     <ListItem>
                       <ListItemText
-                        primary="Download FY 25-26 IT Declaration Template"
+                        primary={`Download FY ${getFormattedFinancialYear().short} IT Declaration Template`}
                         sx={{ color: '#59919d', fontWeight: '400 !important' }}
                       />
                       <ListItemSecondaryAction>
