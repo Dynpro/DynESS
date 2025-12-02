@@ -113,6 +113,7 @@ const commonRoutes = {
     leaveHistory: '/leave/history',
     applyLeave: '/leaveapply',
   },
+  support: '/support',
   // powerBIClient: '/powerBIClient',
 };
 

@@ -19,6 +19,7 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 import InfoIcon from '@mui/icons-material/Info';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import BeachAccessIcon from '@mui/icons-material/BeachAccess';
@@ -250,6 +251,12 @@ const Sidenav = () => {
       title: 'FAQ',
       path: '/faq',
       icon: <HelpOutlineIcon />,
+      allowAll: true,
+    },
+    {
+      title: 'Support',
+      path: '/support',
+      icon: <SupportAgentIcon />,
       allowAll: true,
     },
   ];

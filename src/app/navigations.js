@@ -73,6 +73,7 @@ export const transformArray = (clients, folderObj, dashboardObj, catnsubcatval) 
 export const navigations = [
   { name: 'Dashboard', path: '/dashboard', icon: 'dashboard' },
   { name: 'FAQ', path: '/faq', icon: 'help_outline', auth: [] },
+  { name: 'Support', path: '/support', icon: 'contact_support', auth: [] },
 ];
 
 export const createSubCategory = (categoryObj, folders, dashboards) => {

@@ -124,6 +124,7 @@ const commonConfig = {
     getleavedata: `${baseURL}/getdata`,
     applyleave: `${baseURL}/applyleave`,
     getAllPaySlip: `${baseURL}/getAllPaySlip`,
+    supportTicket: `${baseURL}/support_ticket`,
   },
 };
 

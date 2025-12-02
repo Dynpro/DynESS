@@ -33,6 +33,7 @@ import Tasks from './components/ToDo/Tasks';
 import Payslips from './components/Salary/Payslip/Payslips';
 import PayslipPDF from './components/Salary/Payslip/PayslipPDF';
 import FAQ from './components/AppLandingPage/FAQ';
+import SupportPage from './components/SupportPage/SupportPage';
 import CultureInitiativesPage from './pages/culture/initiatives';
 
 const routes = [
@@ -71,6 +72,7 @@ const routes = [
       { path: commonRoutes.payslips, element: <Payslips /> },
       { path: commonRoutes.payslipPDF, element: <PayslipPDF /> },
       { path: '/faq', element: <FAQ /> },
+      { path: commonRoutes.support, element: <SupportPage /> },
       { path: '/culture/initiatives', element: <CultureInitiativesPage /> },
     ],
   },
