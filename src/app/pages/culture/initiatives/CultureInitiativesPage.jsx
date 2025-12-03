@@ -174,7 +174,7 @@ const CultureInitiativesPage = () => {
 
   const stats = [
     { label: 'Global Practitioners', value: '1200+' },
-    { label: 'Years of Excellence', value: '29+' },
+    { label: 'Years of Excellence', value: '30' },
     { label: 'Countries Served', value: '15+' },
     { label: 'Enterprise Clients', value: '100+ Fortune 500' },
   ];
@@ -292,29 +292,74 @@ const CultureInitiativesPage = () => {
             mx: 'auto',
           }}
         >
-          <Box sx={{ mb: 3 }}>
-            <Typography
-              variant="h6"
-              component="h2"
-              sx={{
-                color: 'text.primary',
-                fontWeight: 600,
-                position: 'relative',
-                display: 'inline-block',
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  bottom: '-8px',
-                  width: '40px',
-                  height: '3px',
-                  backgroundColor: 'primary.main',
-                  borderRadius: '2px',
-                },
-              }}
-            >
-              Our Vision
-            </Typography>
+          <Box sx={{ py: 6, backgroundColor: '#f8f9fa' }}>
+            <Grid container spacing={4} alignItems="center">
+              <Grid item xs={12} md={6} sx={{ textAlign: 'center' }}>
+                <Box sx={{ position: 'relative', display: 'inline-block' }}>
+                  <img
+                    src="/assets/OIP.jpg"
+                    alt="Our Vision"
+                    style={{
+                      width: '300px',
+                      height: '300px',
+                      borderRadius: '0%',
+                      objectFit: 'cover',
+                      border: '10px solid white',
+                      boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+                    }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6} sx={{ pl: { md: 4 } }}>
+                <Typography
+                  variant="h4"
+                  component="h2"
+                  sx={{
+                    fontWeight: 700,
+                    color: '#2c3e50',
+                    mb: 2,
+                    position: 'relative',
+                    display: 'inline-block',
+                    '&:after': {
+                      content: '""',
+                      position: 'absolute',
+                      bottom: '-10px',
+                      left: 0,
+                      width: '60px',
+                      height: '4px',
+                      backgroundColor: '#ff6b6b',
+                      borderRadius: '2px',
+                    },
+                  }}
+                >
+                  Vision
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: '#555',
+                    lineHeight: 1.8,
+                    fontSize: '1.1rem',
+                    mt: 4,
+                    mb: 3,
+                  }}
+                >
+                  <p>
+                    We strive to be a worldwide leader in{' '}
+                    <strong>Information Technology Solutions</strong>. Because DynPro is recognized
+                    for our expertise in select technologies, we creatively adapt and apply those
+                    technologies to solve our clients’ business and IT challenges.
+                  </p>
+                  <p>
+                    As trusted advisors, we help guide and provide solutions for our clients.
+                    Because of us, they can navigate the marketplace, advances in technology, and
+                    the dynamically changing technology workforce. As corporate citizens, we are
+                    actively engaged and making an impact in our communities as individuals, teams,
+                    and our company.
+                  </p>
+                </Typography>
+              </Grid>
+            </Grid>
           </Box>
           <Box>
             <Typography
@@ -336,19 +381,7 @@ const CultureInitiativesPage = () => {
                   },
                 },
               }}
-            >
-              <p>
-                We strive to be a worldwide leader in{' '}
-                <strong>Information Technology Solutions</strong>, recognized for expertise in
-                select technologies and the ability to apply them creatively to solve complex
-                business and IT challenges.
-              </p>
-              <p>
-                As trusted advisors and responsible corporate citizens, DynPro teams engage with
-                clients and communities across geographies, aligning technology innovation with
-                measurable outcomes and positive local impact.
-              </p>
-            </Typography>
+            ></Typography>
           </Box>
         </Paper>
       </Container>

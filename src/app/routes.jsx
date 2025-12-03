@@ -35,6 +35,7 @@ import PayslipPDF from './components/Salary/Payslip/PayslipPDF';
 import FAQ from './components/AppLandingPage/FAQ';
 import CultureInitiativesPage from './pages/culture/initiatives';
 import KnowledgeHubPage from './pages/culture/knowledge-hub';
+import SupportPage from './components/SupportPage/SupportPage'
 
 const routes = [
   {
@@ -74,6 +75,7 @@ const routes = [
       { path: '/faq', element: <FAQ /> },
       { path: '/culture/initiatives', element: <CultureInitiativesPage /> },
       { path: '/knowledge-hub', element: <KnowledgeHubPage /> },
+      { path: '/support', element: <SupportPage /> },
     ],
   },
   ...sessionRoutes,

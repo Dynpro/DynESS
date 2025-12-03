@@ -26,6 +26,7 @@ import EventIcon from '@mui/icons-material/Event';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import { useSelector } from 'react-redux';
 import commonRoutes from './commonRoutes';
 
@@ -250,6 +251,12 @@ const Sidenav = () => {
       title: 'FAQ',
       path: '/faq',
       icon: <HelpOutlineIcon />,
+      allowAll: true,
+    },
+    {
+      title: 'Support',
+      path: '/support',
+      icon: <SupportAgentIcon />,
       allowAll: true,
     },
   ];
