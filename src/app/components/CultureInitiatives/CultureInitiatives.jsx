@@ -1,301 +1,359 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Box,
-  Typography,
-  Card,
-  Breadcrumb,
-  CardContent,
-  Grid,
-  useTheme,
-  Container,
-  Fade,
-  Grow,
-  useMediaQuery,
-  Zoom,
-} from '@mui/material';
-import { styled, keyframes } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
+import { Card, CardContent, Grid, Typography, Chip, Box, Paper, useTheme } from '@mui/material';
+import { styled } from '@mui/system';
+import { Breadcrumb } from 'app/components';
+import React from 'react';
+import useSettings from 'app/hooks/useSettings';
+import { themeShadows } from 'app/components/MatxTheme/themeColors';
 
-// Icons
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import GroupsIcon from '@mui/icons-material/Groups';
-import CelebrationIcon from '@mui/icons-material/Celebration';
-import Diversity3Icon from '@mui/icons-material/Diversity3';
-import HandshakeIcon from '@mui/icons-material/Handshake';
+const Container = styled('div')(({ theme }) => ({
+  margin: '24px',
+  [theme.breakpoints.down('sm')]: {
+    margin: '16px',
+  },
+  '& .breadcrumb': {
+    marginBottom: '24px',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '16px',
+    },
+    '& a, & .MuiTypography-body1': {
+      color: theme.palette.text.primary,
+    },
+  },
+  backgroundColor: theme.palette.background.default,
+  minHeight: 'calc(100vh - 75px)',
+  padding: '24px',
+  [theme.breakpoints.down('sm')]: {
+    padding: '16px',
+  },
+}));
 
-const pulse = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-`;
+const HeaderSection = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(4),
+  paddingBottom: theme.spacing(3),
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  '& h4': {
+    color: theme.palette.text.primary,
+    fontWeight: 600,
+    marginBottom: theme.spacing(2),
+  },
+  '& p': {
+    color: theme.palette.text.secondary,
+    fontSize: '1rem',
+    lineHeight: 1.6,
+  },
+}));
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  borderRadius: '16px',
-  overflow: 'hidden',
-  position: 'relative',
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(145deg, #1a1a2e 0%, #16213e 100%)'
-      : 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
-  boxShadow: theme.shadows[3],
-  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-  '&:hover': {
-    transform: 'translateY(-8px)',
-    boxShadow: theme.shadows[8],
-    '& .card-content': {
-      background: theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.7)' : 'rgba(255, 255, 255, 0.9)',
-    },
-    '& .card-icon': {
-      animation: `${pulse} 1.5s infinite`,
-    },
-  },
-}));
-
-const CardContentStyled = styled(CardContent)(({ theme }) => ({
-  flexGrow: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  textAlign: 'center',
-  padding: theme.spacing(4, 2),
-  position: 'relative',
-  zIndex: 1,
+  border: `1px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.background.paper,
   transition: 'all 0.3s ease',
-  '&.card-content': {
-    background: theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.8)',
-    backdropFilter: 'blur(10px)',
+  boxShadow: theme.shadows[0],
+  '&:hover': {
+    boxShadow: themeShadows[3],
+    transform: 'translateY(-4px)',
+  },
+  '& .MuiCardContent-root': {
+    padding: '24px',
+    '& h6': {
+      color: theme.palette.text.primary,
+      fontWeight: 600,
+      marginBottom: '8px',
+    },
+    '& p': {
+      color: theme.palette.text.secondary,
+      fontSize: '0.875rem',
+      lineHeight: 1.6,
+    },
   },
 }));
 
-const IconWrapper = styled(Box)(({ theme }) => ({
-  width: 80,
-  height: 80,
-  borderRadius: '50%',
+const IconBox = styled(Box)(({ theme }) => ({
+  width: '48px',
+  height: '48px',
+  borderRadius: '8px',
+  backgroundColor:
+    theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  marginBottom: theme.spacing(3),
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)'
-      : 'linear-gradient(45deg, #1976D2 30%, #2196F3 90%)',
-  boxShadow: theme.shadows[4],
-  '& svg': {
-    fontSize: 40,
-    color: theme.palette.common.white,
+  marginBottom: theme.spacing(2),
+  transition: 'all 0.3s ease',
+  '& .material-icons': {
+    fontSize: '24px',
+    color: theme.palette.getContrastText(
+      theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.light
+    ),
+  },
+  '&:hover': {
+    backgroundColor: theme.palette.primary.main,
+    '& .material-icons': {
+      color: theme.palette.primary.contrastText,
+    },
   },
 }));
 
-const initiatives = [
-  {
-    title: 'Employee Recognition',
-    description:
-      'Celebrate outstanding contributions and achievements of our team members through our monthly awards program.',
-    icon: <EmojiEventsIcon />,
-    path: '/culture/recognition',
-    color: 'linear-gradient(45deg, #FF6B6B 30%, #FF8E53 90%)',
+const StatCard = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3, 2),
+  textAlign: 'center',
+  border: `1px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: '8px',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: themeShadows[3],
   },
-  {
-    title: 'Team Building',
-    description:
-      'Strengthen collaboration and team spirit with our quarterly offsite events and activities.',
-    icon: <GroupsIcon />,
-    path: '/culture/team-building',
-    color: 'linear-gradient(45deg, #4ECDC4 30%, #556270 90%)',
+  '& h5': {
+    color: theme.palette.primary.main,
+    fontWeight: 700,
+    fontSize: '2rem',
+    marginBottom: theme.spacing(1),
+    lineHeight: 1.2,
   },
-  {
-    title: 'Milestone Celebrations',
-    description: 'Mark important company and team achievements with memorable celebrations.',
-    icon: <CelebrationIcon />,
-    path: '/culture/milestones',
-    color: 'linear-gradient(45deg, #FF9A9E 30%, #FAD0C4 90%)',
+  '& p': {
+    color: theme.palette.text.secondary,
+    fontWeight: 500,
+    fontSize: '0.875rem',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
   },
-  {
-    title: 'Diversity & Inclusion',
-    description:
-      'Promote a diverse and inclusive workplace through various initiatives and training.',
-    icon: <Diversity3Icon />,
-    path: '/culture/diversity',
-    color: 'linear-gradient(45deg, #A18CD1 30%, #FBC2EB 90%)',
-  },
-  {
-    title: 'Community Engagement',
-    description: 'Give back to our community through volunteer programs and charity events.',
-    icon: <HandshakeIcon />,
-    path: '/culture/community',
-    color: 'linear-gradient(45deg, #84FAB0 30%, #8FD3F4 90%)',
-  },
-];
+}));
 
-const CultureInitiatives = () => {
+const CultureInitiativesPage = () => {
   const theme = useTheme();
-  const navigate = useNavigate();
-  const [show, setShow] = useState(false);
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [mounted, setMounted] = useState(false);
+  const { settings } = useSettings();
+  const isDark = settings.themes[settings.activeTheme].palette.mode === 'dark';
 
-  useEffect(() => {
-    setMounted(true);
-    const timer = setTimeout(() => setShow(true), 100);
-    return () => {
-      clearTimeout(timer);
-      setShow(false);
-      setMounted(false);
-    };
-  }, []);
-
-  const handleCardClick = useCallback(
-    (path) => {
-      navigate(path);
+  const initiatives = [
+    {
+      title: 'Accountability & Excellence',
+      description:
+        'Delivering quality results for clients, consultants, and employees through committed performance, clear ownership, and measurable outcomes that reflect DynPro’s promise.',
+      icon: 'verified',
+      tag: 'Core Value',
     },
-    [navigate]
-  );
+    {
+      title: 'Innovation & Technology Leadership',
+      description:
+        'Leveraging cloud, data, AI, RPA, and modern application platforms to drive process transformation and keep clients ahead in their markets.',
+      icon: 'lightbulb',
+      tag: 'Innovation',
+    },
+    {
+      title: 'Professional Growth & Learning',
+      description:
+        'Creating challenging assignments, upskilling opportunities, and global project exposure so practitioners can build careers while delivering value to customers.',
+      icon: 'trending_up',
+      tag: 'Career Development',
+    },
+    {
+      title: 'Community Engagement & Citizenship',
+      description:
+        'Encouraging employees to contribute as individuals and teams to local communities where DynPro operates across NA, EMEAS, and Asia.',
+      icon: 'public',
+      tag: 'Social Impact',
+    },
+    {
+      title: 'Team Spirit & Collaboration',
+      description:
+        'Strengthening camaraderie through initiatives such as DynPro Sports Fest and cross-location collaboration that connects delivery centers and corporate offices.',
+      icon: 'groups',
+      tag: 'Team Building',
+    },
+    {
+      title: 'Client Partnership & Trust',
+      description:
+        'Acting as trusted advisors to global enterprises, including Fortune 500 organizations, by aligning solutions with business outcomes and long-term relationships.',
+      icon: 'handshake',
+      tag: 'Client Success',
+    },
+  ];
+
+  const stats = [
+    { label: 'Global Practitioners', value: '1200+' },
+    { label: 'Years of Excellence', value: '29+' },
+    { label: 'Countries Served', value: '15+' },
+    { label: 'Enterprise Clients', value: '100+ Fortune 500' },
+  ];
 
   return (
-    <Fade in={show} timeout={800}>
-      <>
-        <Box className="breadcrumb" sx={{ m: 1 }}>
-          <Breadcrumb routeSegments={[{ name: 'Culture Initiatives' }]} />
-        </Box>
-        <Box
+    <>
+      <Box className="breadcrumb">
+        <Breadcrumb routeSegments={[{ name: 'Cultural Initiatives' }]} />
+      </Box>
+
+      <Container>
+        <HeaderSection>
+          <Typography variant="h4" component="h1">
+            Cultural Initiatives
+          </Typography>
+          <Typography variant="body1">
+            DynPro is a global leader in IT Solutions & Services with a workforce of more than 1200
+            practitioners across North America, EMEAS, and Asia. Our Culture Initiatives promote
+            alignment with our mission, celebrate achievements, and reinforce DynPro’s identity as a
+            trusted advisor to clients, consultants, and employees.
+          </Typography>
+        </HeaderSection>
+
+        {/* Quick Stats */}
+        <Grid container spacing={3} sx={{ mb: 6 }}>
+          {stats.map((stat, index) => (
+            <Grid item xs={6} sm={6} md={3} key={index}>
+              <StatCard elevation={0}>
+                <Typography variant="h5" component="div">
+                  {stat.value}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  {stat.label}
+                </Typography>
+              </StatCard>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Section Title */}
+        <Typography
+          variant="h6"
           sx={{
-            minHeight: '100vh',
-            margin: '30px',
-            [theme.breakpoints.down('sm')]: { margin: '16px' },
-            background:
-              theme.palette.mode === 'dark'
-                ? 'radial-gradient(circle at top right, #1a1a2e 0%, #16213e 100%)'
-                : 'linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%)',
+            fontWeight: 600,
+            mb: 4,
+            color: 'text.primary',
+            position: 'relative',
+            paddingBottom: '8px',
+            '&:after': {
+              content: '""',
+              position: 'absolute',
+              left: 0,
+              bottom: 0,
+              width: '40px',
+              height: '3px',
+              backgroundColor: 'primary.main',
+              borderRadius: '2px',
+            },
           }}
         >
-          <Container maxWidth="lg">
-            <Zoom in={show} style={{ transitionDelay: show ? '200ms' : '0ms' }}>
-              <Box>
-                <Typography
-                  variant="h3"
-                  component="h1"
-                  align="center"
-                  gutterBottom
-                  sx={{
-                    fontWeight: 700,
-                    mb: 2,
-                    background:
-                      theme.palette.mode === 'dark'
-                        ? 'linear-gradient(45deg, #64B5F6 30%, #42A5F5 90%)'
-                        : 'linear-gradient(45deg, #1976D2 30%, #2196F3 90%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    position: 'relative',
-                    '&:after': {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: -8,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      width: 80,
-                      height: 4,
-                      background: theme.palette.primary.main,
-                      borderRadius: 2,
-                    },
-                  }}
-                >
-                  Our Culture & Initiatives
-                </Typography>
+          Our Culture Pillars
+        </Typography>
 
-                <Typography
-                  variant="h6"
-                  align="center"
-                  color="textSecondary"
-                  paragraph
-                  sx={{
-                    maxWidth: 700,
-                    mx: 'auto',
-                    mb: 6,
-                    lineHeight: 1.7,
-                  }}
-                >
-                  At DynPro, we believe our strength lies in our people and the culture we build
-                  together. Explore how we celebrate achievements, foster growth, and create
-                  meaningful connections.
-                </Typography>
-              </Box>
-            </Zoom>
+        {/* Initiatives Grid */}
+        <Grid container spacing={3}>
+          {initiatives.map((initiative, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <StyledCard elevation={0}>
+                <CardContent sx={{ p: 3 }}>
+                  <IconBox>
+                    <span className="material-icons" style={{ fontSize: '1.5rem' }}>
+                      {initiative.icon}
+                    </span>
+                  </IconBox>
 
-            <Grid container spacing={4} justifyContent="center">
-              {initiatives.map((initiative, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Grow
-                    in={show}
-                    style={{ transformOrigin: '0 0 0' }}
-                    {...(show ? { timeout: 300 + index * 100 } : {})}
-                  >
-                    <Box>
-                      <StyledCard
-                        component="article"
-                        aria-label={initiative.title}
-                        onClick={() => handleCardClick(initiative.path)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleCardClick(initiative.path)}
-                        tabIndex={0}
-                        role="button"
-                        sx={{
-                          cursor: 'pointer',
-                          height: '100%',
-                          '&:before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            height: 4,
-                            background: initiative.color,
-                          },
-                        }}
-                      >
-                        <CardContentStyled className="card-content">
-                          <IconWrapper className="card-icon">{initiative.icon}</IconWrapper>
-                          <Typography
-                            variant="h6"
-                            component="h3"
-                            gutterBottom
-                            sx={{
-                              fontWeight: 600,
-                              mb: 2,
-                              color:
-                                theme.palette.mode === 'dark' ? '#fff' : theme.palette.text.primary,
-                            }}
-                          >
-                            {initiative.title}
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            color="textSecondary"
-                            sx={{
-                              mb: 2,
-                              lineHeight: 1.6,
-                            }}
-                          >
-                            {initiative.description}
-                          </Typography>
-                        </CardContentStyled>
-                      </StyledCard>
-                    </Box>
-                  </Grow>
-                </Grid>
-              ))}
+                  <Chip
+                    label={initiative.tag}
+                    size="small"
+                    sx={{
+                      mb: 2,
+                      height: '24px',
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                    }}
+                  />
+
+                  <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600 }}>
+                    {initiative.title}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                    {initiative.description}
+                  </Typography>
+                </CardContent>
+              </StyledCard>
             </Grid>
-          </Container>
-        </Box>
-      </>
-    </Fade>
+          ))}
+        </Grid>
+
+        {/* Vision Section */}
+        <Paper
+          elevation={0}
+          sx={{
+            mt: 6,
+            p: { xs: 2, sm: 3, md: 4 },
+            border: `1px solid ${theme.palette.divider}`,
+            backgroundColor: 'background.paper',
+            borderRadius: '8px',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              boxShadow: themeShadows[2],
+            },
+            width: '100%',
+            maxWidth: '1200px',
+            mx: 'auto',
+          }}
+        >
+          <Box sx={{ mb: 3 }}>
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{
+                color: 'text.primary',
+                fontWeight: 600,
+                position: 'relative',
+                display: 'inline-block',
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  bottom: '-8px',
+                  width: '40px',
+                  height: '3px',
+                  backgroundColor: 'primary.main',
+                  borderRadius: '2px',
+                },
+              }}
+            >
+              Our Vision
+            </Typography>
+          </Box>
+          <Box>
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                color: 'text.primary',
+                lineHeight: 1.8,
+                fontSize: '1rem',
+                '& strong': {
+                  color: 'text.primary',
+                  fontWeight: 500,
+                },
+                '& p': {
+                  margin: 0,
+                  padding: 0,
+                  '&:not(:last-child)': {
+                    mb: 2,
+                  },
+                },
+              }}
+            >
+              <p>
+                We strive to be a worldwide leader in{' '}
+                <strong>Information Technology Solutions</strong>, recognized for expertise in
+                select technologies and the ability to apply them creatively to solve complex
+                business and IT challenges.
+              </p>
+              <p>
+                As trusted advisors and responsible corporate citizens, DynPro teams engage with
+                clients and communities across geographies, aligning technology innovation with
+                measurable outcomes and positive local impact.
+              </p>
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </>
   );
 };
 
-CultureInitiatives.propTypes = {
-  theme: PropTypes.object,
-};
-
-export default React.memo(CultureInitiatives);
+export default CultureInitiativesPage;

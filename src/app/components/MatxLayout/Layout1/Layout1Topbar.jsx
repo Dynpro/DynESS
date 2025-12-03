@@ -12,6 +12,9 @@ import {
   Typography,
   useMediaQuery,
   alpha,
+  Autocomplete,
+  Paper,
+  InputAdornment,
 } from '@mui/material';
 import { Box, styled, useTheme } from '@mui/system';
 import { MatxMenu } from 'app/components';
@@ -139,11 +142,12 @@ const Layout1Topbar = () => {
   const suggestionText = isLightMode ? '#0d162c' : theme.palette.text.primary;
   const suggestionCaption = isLightMode ? 'rgba(29,38,44,.7)' : theme.palette.text.secondary;
 
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [suggestions, setSuggestions] = useState({ docs: [], actions: [] });
   const searchRef = useRef(null);
+  const searchContainerRef = useRef(null);
   const navigate = useNavigate();
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const updateSidebarMode = (sidebarSettings) => {
     updateSettings({
@@ -164,37 +168,60 @@ const Layout1Topbar = () => {
 
   const dispatch = useDispatch();
 
-  const handleSearchIconClick = () => {
+  const handleSearchChange = (event, value) => {
+    setSearchValue(value || '');
+    window.dispatchEvent(new CustomEvent('globalSearch', { detail: value?.trim() || '' }));
+  };
+
+  const handleSearchSubmit = (event, value) => {
+    if (value) {
+      window.dispatchEvent(new CustomEvent('globalSearch', { detail: value.trim() }));
+      setSearchValue('');
+    }
+  };
+
+  const toggleSearch = (event) => {
+    event.stopPropagation();
     if (searchOpen) {
+      setSearchValue('');
       window.dispatchEvent(new CustomEvent('globalSearch', { detail: '' }));
-      setSearchValue('');
+    } else {
+      // Focus the input when opening
+      setTimeout(() => {
+        if (searchRef.current) {
+          searchRef.current.focus();
+        }
+      }, 0);
     }
-    setSearchOpen((prev) => !prev);
+    setSearchOpen(!searchOpen);
   };
-
-  const handleSearchKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      const query = searchValue.trim();
-      window.dispatchEvent(new CustomEvent('globalSearch', { detail: query }));
-      setSearchValue('');
-      setSearchOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (searchOpen && searchRef.current) {
-      searchRef.current.focus();
-    }
-  }, [searchOpen]);
 
   useEffect(() => {
     const handleSuggestions = (event) => {
       setSuggestions(event?.detail || { docs: [], actions: [] });
     };
+
+    const handleClickOutside = (event) => {
+      if (searchOpen && 
+          searchContainerRef.current && 
+          !searchContainerRef.current.contains(event.target) &&
+          !(event.target.closest && event.target.closest('.MuiAutocomplete-popper'))) {
+        setSearchOpen(false);
+        setSearchValue('');
+        window.dispatchEvent(new CustomEvent('globalSearch', { detail: '' }));
+      }
+    };
+
+    // Add when component mounts
+    document.addEventListener('mousedown', handleClickOutside);
     window.addEventListener('searchSuggestionsReady', handleSuggestions);
-    return () => window.removeEventListener('searchSuggestionsReady', handleSuggestions);
-  }, []);
+    
+    // Clean up
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('searchSuggestionsReady', handleSuggestions);
+    };
+  }, [searchOpen]);
 
   const { handleRefreshData } = useRefreshData();
 
@@ -233,112 +260,186 @@ const Layout1Topbar = () => {
           <AppCurrentClient />
         </Box>
         <Box display="flex" alignItems="center">
-          <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            {searchOpen && (
-              <SearchField
-                inputRef={searchRef}
-                placeholder="Search for Documents, PaySlips, Attendance...."
+          <Box ref={searchContainerRef} sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+            <Box
+              sx={{
+                width: searchOpen ? 350 : 0,
+                opacity: searchOpen ? 1 : 0,
+                transition: 'all 0.3s ease',
+                overflow: 'hidden',
+              }}
+            >
+              <Autocomplete
+                freeSolo
+                disableClearable
+                options={[]}
                 value={searchValue}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  setSearchValue(value);
-                  window.dispatchEvent(new CustomEvent('globalSearch', { detail: value.trim() }));
-                }}
-                onKeyDown={handleSearchKeyDown}
-                size="small"
-                sx={{ width: 350, height: 35 }}
+                onChange={handleSearchSubmit}
+                onInputChange={handleSearchChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    inputRef={searchRef}
+                    placeholder="Search for Documents, PaySlips, Attendance..."
+                    size="small"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        height: 36,
+                        pr: 1,
+                        '& fieldset': {
+                          borderColor: 'divider',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'primary.main',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: 'primary.main',
+                        },
+                      },
+                      '& .MuiInputBase-input': {
+                        py: '8.5px',
+                      },
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Icon sx={{ color: 'text.secondary', mr: 1 }}>search</Icon>
+                        </InputAdornment>
+                      ),
+                      endAdornment: searchValue && (
+                        <InputAdornment position="end">
+                          <IconButton
+                            size="small"
+                            onClick={() => {
+                              setSearchValue('');
+                              window.dispatchEvent(new CustomEvent('globalSearch', { detail: '' }));
+                            }}
+                          >
+                            <Icon fontSize="small">close</Icon>
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+                PaperComponent={(props) => (
+                  <Paper
+                    {...props}
+                    sx={{
+                      mt: 0.5,
+                      boxShadow: 3,
+                      '& .MuiAutocomplete-listbox': {
+                        p: 0,
+                        '& li': {
+                          px: 2,
+                          py: 1,
+                        },
+                      },
+                    }}
+                  />
+                )}
               />
-            )}
-            <StyledIconButton onClick={handleSearchIconClick} sx={{ ml: 1 }}>
+            </Box>
+            <StyledIconButton
+              onClick={toggleSearch}
+              sx={{
+                ml: 1,
+                transform: searchOpen ? 'scale(1.1)' : 'scale(1)',
+                transition: 'transform 0.2s ease',
+              }}
+            >
               <Icon>{searchOpen ? 'close' : 'search'}</Icon>
             </StyledIconButton>
-            {searchOpen && (suggestions.docs.length > 0 || suggestions.actions.length > 0) && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 'calc(100% + 8px)',
-                  right: 0,
-                  width: 310,
-                  bgcolor: suggestionBg,
-                  borderRadius: 2,
-                  boxShadow: 4,
-                  zIndex: 1400,
-                  maxHeight: 280,
-                  overflowY: 'auto',
-                }}
-              >
-                {suggestions.docs.length > 0 && (
-                  <Box sx={{ px: 2, py: 1 }}>
-                    <Typography variant="caption" color={suggestionCaption}>
-                      Documents
-                    </Typography>
-                    <List disablePadding>
-                      {suggestions.docs.map((doc) => (
-                        <ListItemButton
-                          key={doc.id}
-                          onClick={() => {
-                            window.dispatchEvent(
-                              new CustomEvent('openDocumentRequest', { detail: { doc } })
-                            );
-                            setSearchValue('');
-                            setSearchOpen(false);
-                          }}
-                          sx={{
-                            borderRadius: 1,
-                            color: suggestionText,
-                          }}
-                        >
-                          <ListItemText
-                            primary={doc.doc_name}
-                            secondary={doc.section_title}
-                            primaryTypographyProps={{
-                              variant: 'body2',
-                              sx: { color: suggestionText },
+            {searchOpen &&
+              searchValue &&
+              (suggestions.docs.length > 0 || suggestions.actions.length > 0) && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: 'calc(100% + 8px)',
+                    right: 0,
+                    width: 310,
+                    bgcolor: suggestionBg,
+                    borderRadius: 2,
+                    boxShadow: 4,
+                    zIndex: 1400,
+                    maxHeight: 280,
+                    overflowY: 'auto',
+                  }}
+                >
+                  {suggestions.docs.length > 0 && (
+                    <Box sx={{ px: 2, py: 1 }}>
+                      <Typography variant="caption" color={suggestionCaption}>
+                        Documents
+                      </Typography>
+                      <List disablePadding>
+                        {suggestions.docs.map((doc) => (
+                          <ListItemButton
+                            key={doc.id}
+                            onClick={() => {
+                              window.dispatchEvent(
+                                new CustomEvent('openDocumentRequest', { detail: { doc } })
+                              );
+                              setSearchValue('');
+                              setSearchOpen(false);
                             }}
-                            secondaryTypographyProps={{
-                              variant: 'caption',
-                              sx: { color: suggestionCaption },
+                            sx={{
+                              borderRadius: 1,
+                              color: suggestionText,
                             }}
-                          />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Box>
-                )}
-                {suggestions.docs.length > 0 && suggestions.actions.length > 0 && <Divider />}
-                {suggestions.actions.length > 0 && (
-                  <Box sx={{ px: 2, py: 1 }}>
-                    <Typography variant="caption" color={suggestionCaption}>
-                      Actions
-                    </Typography>
-                    <List disablePadding>
-                      {suggestions.actions.map((action) => (
-                        <ListItemButton
-                          key={action.label}
-                          onClick={() => {
-                            navigate(action.route);
-                            setSearchValue('');
-                            setSearchOpen(false);
-                          }}
-                          sx={{
-                            borderRadius: 1,
-                            color: suggestionText,
-                          }}
-                        >
-                          <ListItemText
-                            primary={action.label}
-                            primaryTypographyProps={{
-                              variant: 'body2',
-                              sx: { color: suggestionText },
+                          >
+                            <ListItemText
+                              primary={doc.doc_name}
+                              secondary={doc.section_title}
+                              primaryTypographyProps={{
+                                variant: 'body2',
+                                sx: { color: suggestionText },
+                              }}
+                              secondaryTypographyProps={{
+                                variant: 'caption',
+                                sx: { color: suggestionCaption },
+                              }}
+                            />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+                  {suggestions.docs.length > 0 && suggestions.actions.length > 0 && <Divider />}
+                  {suggestions.actions.length > 0 && (
+                    <Box sx={{ px: 2, py: 1 }}>
+                      <Typography variant="caption" color={suggestionCaption}>
+                        Actions
+                      </Typography>
+                      <List disablePadding>
+                        {suggestions.actions.map((action) => (
+                          <ListItemButton
+                            key={action.label}
+                            onClick={() => {
+                              navigate(action.route);
+                              setSearchValue('');
+                              setSearchOpen(false);
                             }}
-                          />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Box>
-                )}
-              </Box>
-            )}
+                            sx={{
+                              borderRadius: 1,
+                              color: suggestionText,
+                            }}
+                          >
+                            <ListItemText
+                              primary={action.label}
+                              primaryTypographyProps={{
+                                variant: 'body2',
+                                sx: { color: suggestionText },
+                              }}
+                            />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+                </Box>
+              )}
           </Box>
           <AppThemeModeSwitch
             Icon={Icon}
