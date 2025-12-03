@@ -180,179 +180,179 @@ const CultureInitiativesPage = () => {
   ];
 
   return (
-    <Container>
+    <>
       <Box className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[{ name: 'Culture', path: '/culture' }, { name: 'Initiatives' }]}
-        />
+        <Breadcrumb routeSegments={[{ name: 'Cultural Initiatives' }]} />
       </Box>
 
-      <HeaderSection>
-        <Typography variant="h4" component="h1">
-          Culture Initiatives
-        </Typography>
-        <Typography variant="body1">
-          DynPro is a global leader in IT Solutions & Services with a workforce of more than 1200
-          practitioners across North America, EMEAS, and Asia. Our Culture Initiatives promote
-          alignment with our mission, celebrate achievements, and reinforce DynPro’s identity as a
-          trusted advisor to clients, consultants, and employees.
-        </Typography>
-      </HeaderSection>
-
-      {/* Quick Stats */}
-      <Grid container spacing={3} sx={{ mb: 6 }}>
-        {stats.map((stat, index) => (
-          <Grid item xs={6} sm={6} md={3} key={index}>
-            <StatCard elevation={0}>
-              <Typography variant="h5" component="div">
-                {stat.value}
-              </Typography>
-              <Typography variant="body2" component="p">
-                {stat.label}
-              </Typography>
-            </StatCard>
-          </Grid>
-        ))}
-      </Grid>
-
-      {/* Section Title */}
-      <Typography
-        variant="h6"
-        sx={{
-          fontWeight: 600,
-          mb: 4,
-          color: 'text.primary',
-          position: 'relative',
-          paddingBottom: '8px',
-          '&:after': {
-            content: '""',
-            position: 'absolute',
-            left: 0,
-            bottom: 0,
-            width: '40px',
-            height: '3px',
-            backgroundColor: 'primary.main',
-            borderRadius: '2px',
-          },
-        }}
-      >
-        Our Culture Pillars
-      </Typography>
-
-      {/* Initiatives Grid */}
-      <Grid container spacing={3}>
-        {initiatives.map((initiative, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <StyledCard elevation={0}>
-              <CardContent sx={{ p: 3 }}>
-                <IconBox>
-                  <span className="material-icons" style={{ fontSize: '1.5rem' }}>
-                    {initiative.icon}
-                  </span>
-                </IconBox>
-
-                <Chip
-                  label={initiative.tag}
-                  size="small"
-                  sx={{
-                    mb: 2,
-                    height: '24px',
-                    fontSize: '0.75rem',
-                    fontWeight: 500,
-                  }}
-                />
-
-                <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600 }}>
-                  {initiative.title}
-                </Typography>
-
-                <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                  {initiative.description}
-                </Typography>
-              </CardContent>
-            </StyledCard>
-          </Grid>
-        ))}
-      </Grid>
-
-      {/* Vision Section */}
-      <Paper
-        elevation={0}
-        sx={{
-          mt: 6,
-          p: { xs: 2, sm: 3, md: 4 },
-          border: `1px solid ${theme.palette.divider}`,
-          backgroundColor: 'background.paper',
-          borderRadius: '8px',
-          transition: 'all 0.3s ease',
-          '&:hover': {
-            boxShadow: themeShadows[2],
-          },
-          width: '100%',
-          maxWidth: '1200px',
-          mx: 'auto',
-        }}
-      >
-        <Box sx={{ mb: 3 }}>
-          <Typography
-            variant="h6"
-            component="h2"
-            sx={{
-              color: 'text.primary',
-              fontWeight: 600,
-              position: 'relative',
-              display: 'inline-block',
-              '&:after': {
-                content: '""',
-                position: 'absolute',
-                left: 0,
-                bottom: '-8px',
-                width: '40px',
-                height: '3px',
-                backgroundColor: 'primary.main',
-                borderRadius: '2px',
-              },
-            }}
-          >
-            Our Vision
+      <Container>
+        <HeaderSection>
+          <Typography variant="h4" component="h1">
+            Cultural Initiatives
           </Typography>
-        </Box>
-        <Box>
-          <Typography
-            variant="body1"
-            component="div"
-            sx={{
-              color: 'text.primary',
-              lineHeight: 1.8,
-              fontSize: '1rem',
-              '& strong': {
+          <Typography variant="body1">
+            DynPro is a global leader in IT Solutions & Services with a workforce of more than 1200
+            practitioners across North America, EMEAS, and Asia. Our Culture Initiatives promote
+            alignment with our mission, celebrate achievements, and reinforce DynPro’s identity as a
+            trusted advisor to clients, consultants, and employees.
+          </Typography>
+        </HeaderSection>
+
+        {/* Quick Stats */}
+        <Grid container spacing={3} sx={{ mb: 6 }}>
+          {stats.map((stat, index) => (
+            <Grid item xs={6} sm={6} md={3} key={index}>
+              <StatCard elevation={0}>
+                <Typography variant="h5" component="div">
+                  {stat.value}
+                </Typography>
+                <Typography variant="body2" component="p">
+                  {stat.label}
+                </Typography>
+              </StatCard>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Section Title */}
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            mb: 4,
+            color: 'text.primary',
+            position: 'relative',
+            paddingBottom: '8px',
+            '&:after': {
+              content: '""',
+              position: 'absolute',
+              left: 0,
+              bottom: 0,
+              width: '40px',
+              height: '3px',
+              backgroundColor: 'primary.main',
+              borderRadius: '2px',
+            },
+          }}
+        >
+          Our Culture Pillars
+        </Typography>
+
+        {/* Initiatives Grid */}
+        <Grid container spacing={3}>
+          {initiatives.map((initiative, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <StyledCard elevation={0}>
+                <CardContent sx={{ p: 3 }}>
+                  <IconBox>
+                    <span className="material-icons" style={{ fontSize: '1.5rem' }}>
+                      {initiative.icon}
+                    </span>
+                  </IconBox>
+
+                  <Chip
+                    label={initiative.tag}
+                    size="small"
+                    sx={{
+                      mb: 2,
+                      height: '24px',
+                      fontSize: '0.75rem',
+                      fontWeight: 500,
+                    }}
+                  />
+
+                  <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 600 }}>
+                    {initiative.title}
+                  </Typography>
+
+                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                    {initiative.description}
+                  </Typography>
+                </CardContent>
+              </StyledCard>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Vision Section */}
+        <Paper
+          elevation={0}
+          sx={{
+            mt: 6,
+            p: { xs: 2, sm: 3, md: 4 },
+            border: `1px solid ${theme.palette.divider}`,
+            backgroundColor: 'background.paper',
+            borderRadius: '8px',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              boxShadow: themeShadows[2],
+            },
+            width: '100%',
+            maxWidth: '1200px',
+            mx: 'auto',
+          }}
+        >
+          <Box sx={{ mb: 3 }}>
+            <Typography
+              variant="h6"
+              component="h2"
+              sx={{
                 color: 'text.primary',
-                fontWeight: 500,
-              },
-              '& p': {
-                margin: 0,
-                padding: 0,
-                '&:not(:last-child)': {
-                  mb: 2,
+                fontWeight: 600,
+                position: 'relative',
+                display: 'inline-block',
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  bottom: '-8px',
+                  width: '40px',
+                  height: '3px',
+                  backgroundColor: 'primary.main',
+                  borderRadius: '2px',
                 },
-              },
-            }}
-          >
-            <p>
-              We strive to be a worldwide leader in{' '}
-              <strong>Information Technology Solutions</strong>, recognized for expertise in select
-              technologies and the ability to apply them creatively to solve complex business and IT
-              challenges.
-            </p>
-            <p>
-              As trusted advisors and responsible corporate citizens, DynPro teams engage with
-              clients and communities across geographies, aligning technology innovation with
-              measurable outcomes and positive local impact.
-            </p>
-          </Typography>
-        </Box>
-      </Paper>
-    </Container>
+              }}
+            >
+              Our Vision
+            </Typography>
+          </Box>
+          <Box>
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                color: 'text.primary',
+                lineHeight: 1.8,
+                fontSize: '1rem',
+                '& strong': {
+                  color: 'text.primary',
+                  fontWeight: 500,
+                },
+                '& p': {
+                  margin: 0,
+                  padding: 0,
+                  '&:not(:last-child)': {
+                    mb: 2,
+                  },
+                },
+              }}
+            >
+              <p>
+                We strive to be a worldwide leader in{' '}
+                <strong>Information Technology Solutions</strong>, recognized for expertise in
+                select technologies and the ability to apply them creatively to solve complex
+                business and IT challenges.
+              </p>
+              <p>
+                As trusted advisors and responsible corporate citizens, DynPro teams engage with
+                clients and communities across geographies, aligning technology innovation with
+                measurable outcomes and positive local impact.
+              </p>
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </>
   );
 };
 

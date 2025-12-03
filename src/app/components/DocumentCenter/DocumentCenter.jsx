@@ -76,6 +76,3 @@ const DocumentCenter = () => {
 };
 
 export default DocumentCenter;
-
-
-

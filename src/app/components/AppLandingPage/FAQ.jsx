@@ -5,13 +5,16 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  useTheme,
 } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { styled } from '@mui/system';
+import { Breadcrumb } from 'app/components';
 
 const FAQContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(8, 0),
   backgroundColor: theme.palette.background.paper,
+  minHeight: '100vh',
 }));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
@@ -24,12 +27,26 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   borderRadius: '8px !important',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: theme.shadows[1],
   '&:before': {
     display: 'none',
   },
   '&.Mui-expanded': {
     margin: theme.spacing(0, 0, 2, 0),
+  },
+  '& .MuiAccordionSummary-root': {
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '8px',
+    '&:hover': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+  '& .MuiAccordionSummary-content': {
+    margin: theme.spacing(2, 0),
+  },
+  '& .MuiAccordionDetails-root': {
+    padding: theme.spacing(0, 3, 3, 3),
   },
 }));
 
@@ -186,74 +203,92 @@ const faqSections = [
 ];
 
 const FAQ = () => {
+  const theme = useTheme();
+
   return (
-    <FAQContainer id="faq">
-      <Container maxWidth="md">
-        <SectionTitle variant="h3" component="h2">
-          Frequently Asked Questions
-        </SectionTitle>
+    <>
+      <Box className="breadcrumb" sx={{ m: 1 }}>
+        <Breadcrumb routeSegments={[{ name: 'FAQ' }]} />
+      </Box>
+      <FAQContainer id="faq">
+        <Container maxWidth="md">
+          <SectionTitle variant="h3" component="h2">
+            Frequently Asked Questions
+          </SectionTitle>
 
-        {faqSections.map((section, sectionIndex) => (
-          <Box key={sectionIndex} sx={{ mb: 6 }}>
+          {faqSections.map((section, sectionIndex) => (
+            <Box key={sectionIndex} sx={{ mb: 6 }}>
+              <Typography
+                variant="h5"
+                component="h3"
+                sx={{
+                  mb: 3,
+                  color: 'text.primary',
+                  fontWeight: 600,
+                  borderBottom: '2px solid',
+                  borderColor: 'divider',
+                  pb: 1,
+                  display: 'inline-block',
+                }}
+              >
+                {section.title}
+              </Typography>
+
+              {section.items.map((faq, itemIndex) => (
+                <StyledAccordion key={`${sectionIndex}-${itemIndex}`}>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`faq-panel-${sectionIndex}-${itemIndex}-content`}
+                    id={`faq-panel-${sectionIndex}-${itemIndex}-header`}
+                  >
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 600,
+                        color: 'text.primary',
+                      }}
+                    >
+                      {faq.question}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: 'text.secondary',
+                        whiteSpace: 'pre-line',
+                      }}
+                    >
+                      {faq.answer}
+                    </Typography>
+                  </AccordionDetails>
+                </StyledAccordion>
+              ))}
+            </Box>
+          ))}
+
+          <Box sx={{ mt: 4, textAlign: 'center' }}>
             <Typography
-              variant="h5"
-              component="h3"
-              sx={({ palette }) => ({
-                mb: 3,
-                color: 'text.primary',
-                fontWeight: 600,
-                borderBottom: '2px solid',
-                borderColor: 'divider',
-                pb: 1,
-                display: 'inline-block',
-                '&:hover': {
-                  color: palette.mode === 'dark' ? 'primary.light' : 'primary.dark',
-                  transition: 'color 0.3s ease',
+              variant="body1"
+              sx={{
+                color: 'text.secondary',
+                '& a': {
+                  color: 'text.primary',
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  },
                 },
-                transition: 'color 0.3s ease',
-              })}
+              }}
             >
-              {section.title}
+              Still have questions? Contact HR Support at{' '}
+              <a href="mailto:hrsupport-1@dynproindia.com">hrsupport-1@dynproindia.com</a> or{' '}
+              <a href="tel:06360786994">06360786994</a>
             </Typography>
-
-            {section.items.map((faq, itemIndex) => (
-              <StyledAccordion key={`${sectionIndex}-${itemIndex}`}>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls={`faq-panel-${sectionIndex}-${itemIndex}-content`}
-                  id={`faq-panel-${sectionIndex}-${itemIndex}-header`}
-                >
-                  <Typography variant="subtitle1" fontWeight={600}>
-                    {faq.question}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography variant="body1" color="text.secondary">
-                    {faq.answer}
-                  </Typography>
-                </AccordionDetails>
-              </StyledAccordion>
-            ))}
           </Box>
-        ))}
-
-        <Box sx={{ mt: 4, textAlign: 'center' }}>
-          <Typography variant="body1" color="text.secondary">
-            Still have questions? Contact HR Support at{' '}
-            <a
-              href="mailto:hrsupport-1@dynproindia.com"
-              style={{ color: 'inherit', textDecoration: 'underline' }}
-            >
-              hrsupport-1@dynproindia.com
-            </a>{' '}
-            or call{' '}
-            <a href="tel:06360786994" style={{ color: 'inherit', textDecoration: 'underline' }}>
-              06360786994
-            </a>
-          </Typography>
-        </Box>
-      </Container>
-    </FAQContainer>
+        </Container>
+      </FAQContainer>
+    </>
   );
 };
 
