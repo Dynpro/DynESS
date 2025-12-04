@@ -61,7 +61,7 @@ const faqSections = [
       {
         question: 'How do I update my personal information?',
         answer:
-          'Log in to the portal and navigate to "My Profile" to update your address, contact details, emergency contacts, and more. Submit changes through the portal. Some updates may require HR approval.',
+          'Log in to the portal and navigate to your profile to update your address, contact details, emergency contacts, and more. Submit changes through the portal. Some updates may require HR approval.',
       },
       {
         question: 'What documents do I need to submit when updating information?',
@@ -81,17 +81,17 @@ const faqSections = [
       {
         question: 'Where can I view my salary details?',
         answer:
-          'Access "Payroll" or "My Salary" section to view your salary breakup, deductions, and net pay.',
+          'Access "Salary Slips" section to view your salary breakup, deductions, and net pay.',
       },
       {
         question: 'How do I download my pay slips?',
         answer:
-          'Go to "Payroll" → "Pay Slips" and select the month. Click "Download" to save the PDF.',
+          'Go to "Salary Slips" -> select the month. Click "Download" to save the PDF.',
       },
       {
         question: 'When is my salary credited?',
         answer:
-          'Salary is typically credited on the last working day of the month or first working day of the following month, subject to successful BGV completion and client confirmation.',
+          'Salary is typically credited on the 3rd, 5th or 7th of the following month, subject to successful BGV completion and client confirmation.',
       },
     ],
   },
@@ -101,12 +101,12 @@ const faqSections = [
       {
         question: 'How do I apply for leave?',
         answer:
-          'Go to "Leave" → "Apply Leave" → Select leave type and dates → Add reason → Submit. You\'ll receive approval status via email.',
+          'Go to "Leave" → "Apply Leave" → Select leave type and dates → Add reason → Submit. You\'ll receive approval status via email or via hovering and clicking on "Apply Leave" on the preferred date in the calendar card ',
       },
       {
         question: 'How do I check my leave balance?',
         answer:
-          'View your available leave balance in the "Leave" section dashboard or "My Leave Balance" page.',
+          'View your available leave balance in the "Calendar card" in homepage or "Apply Leave" page.',
       },
       {
         question: 'What types of leave are available?',
@@ -121,18 +121,18 @@ const faqSections = [
       {
         question: 'How do I view my attendance record?',
         answer:
-          'Access "Attendance" section to view daily attendance, check-in/check-out times, and monthly attendance summary.',
+          'Access "Attendance" section to view daily attendance, and monthly attendance summary.',
       },
       {
         question: 'How do I submit my timesheet?',
         answer:
           'Go to "Timesheet" → Fill in daily hours worked → Submit for approval. For queries, contact ts-ibm@dynproindia.com (IBM employees) or ts@dynproindia.com (all others).',
       },
-      {
-        question: 'What if I forgot to mark attendance?',
-        answer:
-          'Submit an attendance regularization request through the portal with justification. Manager approval is required.',
-      },
+      // {
+      //   question: 'What if I forgot to mark attendance?',
+      //   answer:
+      //     'Submit an attendance regularization request through the portal with justification. Manager approval is required.',
+      // },
     ],
   },
   {
@@ -141,12 +141,12 @@ const faqSections = [
       {
         question: 'Where can I access my employment documents?',
         answer:
-          'Navigate to "My Documents" to access your Appointment Letter, salary slips, Form 16, and other employment-related documents.',
+          'Navigate to "Document Center" to access your Appointment Letter, salary slips, Form 16, and other employment-related documents.',
       },
       {
         question: 'How do I download Form 16 for tax filing?',
         answer:
-          'Go to "Documents" → "Tax Documents" → Select financial year → Download Form 16. Available after financial year-end.',
+          'Go to "Document Center" → "Tax Documents" → Select financial year → Download Form 16. Available after financial year-end.',
       },
     ],
   },

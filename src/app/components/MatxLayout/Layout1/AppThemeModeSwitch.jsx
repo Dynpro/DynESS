@@ -3,7 +3,7 @@ import { Tooltip } from '@mui/material';
 import useSettings from 'app/hooks/useSettings';
 import { useDispatch, useSelector } from 'react-redux';
 
-const determineIcon = (activeTheme) => (activeTheme === 'slateDark1' ? 'light_mode' : 'dark_mode');
+const determineIcon = (isDark) => (isDark ? 'light_mode' : 'dark_mode');
 
 const demoLayouts = [
   {
@@ -43,25 +43,19 @@ const AppThemeModeSwitch = ({ Icon, StyledIconButton, TooltipName }) => {
     updateSettings(layout);
     dispatch({ type: 'SET_THEME', theme: layout });
   };
-  const currentTheme = useSelector((state) => state.currentTheme?.theme?.activeTheme);
-  const determinedIcon = determineIcon(currentTheme);
+  const activeTheme = useSelector((state) => state.currentTheme?.theme?.activeTheme);
+  const isDark = activeTheme === 'slateDark1';
+  const determinedIcon = determineIcon(isDark);
   return (
     <Tooltip title={TooltipName}>
       <StyledIconButton
         style={{ cursor: 'pointer' }}
         onClick={() => {
-          switch (currentTheme) {
-            case 'slateDark1':
-              setTheme(demoLayouts[0].options);
-              break;
-            case 'blue1':
-              setTheme(demoLayouts[1].options);
-              break;
-            case 'blue':
-              setTheme(demoLayouts[1].options);
-              break;
-            //   default:
-            //     setTheme(demoLayouts[0].options);
+          // Toggle between light and dark layouts regardless of the exact activeTheme string
+          if (isDark) {
+            setTheme(demoLayouts[0].options); // go to light
+          } else {
+            setTheme(demoLayouts[1].options); // go to dark
           }
         }}
       >
